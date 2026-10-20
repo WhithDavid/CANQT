@@ -1,0 +1,50 @@
+name: Release CANQT
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/release.yml
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install build dependencies
+        run: python -m pip install -r requirements-build.txt
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Build CANQT
+        run: python build_exe.py
+
+      - name: Package application
+        shell: pwsh
+        run: |
+          Copy-Item README.md dist\CANQT\README.md
+          Compress-Archive -Path dist\CANQT -DestinationPath CANQT-v1.0.0-win-x64.zip -Force
+          $hash = (Get-FileHash CANQT-v1.0.0-win-x64.zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  CANQT-v1.0.0-win-x64.zip" | Set-Content SHA256SUMS.txt -Encoding ascii
+
+      - name: Create GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create v1.0.0 CANQT-v1.0.0-win-x64.zip SHA256SUMS.txt --title "CANQT v1.0.0" --notes "CANQT 首个公开版本。包含 Windows x64 免安装程序、BLF/DBC 通道绑定、共享时间轴波形、双游标和观测组等功能。" --target "${{ github.sha }}" --latest
