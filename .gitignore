@@ -1,0 +1,39 @@
+# Python environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Build outputs and local release packages
+build/
+dist/
+release/
+design/
+*.zip
+*.7z
+
+# Runtime and installer logs
+*.log
+
+# CAN/CAN FD logs and databases
+*.blf
+*.dbc
+*.mf4
+*.mdf
+*.asc
+*.trc
+
+# ECU and vehicle project data
+*.a2l
+*.elf
+*.hex
+*.s19
+*.map
+*.cna
+*.arxml
+
+# Local CANQT projects and IDE settings
+*.canqt
+debug_start.cmd
+.vscode/
+.idea/

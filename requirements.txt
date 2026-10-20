@@ -1,0 +1,6 @@
+cantools>=40,<45
+python-can>=4.4,<5
+# 只安装 Widgets/Core/Gui，避免下载本工具不需要的 WebEngine、PDF 等 Addons。
+PySide6-Essentials>=6.7,<7
+pyqtgraph>=0.13,<1
+numpy>=1.26,<3
